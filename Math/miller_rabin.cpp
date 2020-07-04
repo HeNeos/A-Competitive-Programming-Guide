@@ -23,7 +23,7 @@ ll fastexpp(ll x, ll y, ll p){
 
 //Change fastexpp to fastexp for small numbers :)
 bool check_composite(ll n, ll a, ll d, int s){
-	ll x = fastexp(a,d,n);
+	ll x = fastexpp(a,d,n);
 	if(x == 1 || x == n-1) return false;
 	for(int r=1; r<s; r++){
 		x = (1LL*x*x)%n;
