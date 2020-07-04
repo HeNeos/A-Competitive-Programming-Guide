@@ -20,7 +20,7 @@ ll fastexpp(ll x, ll y, ll p){
 	return ans%p;
 }
 
-#Change fastexpp to fastexp for small numbers :)
+//Change fastexpp to fastexp for small numbers :)
 
 bool isPrime(ll p){
 	bool flag = true;
