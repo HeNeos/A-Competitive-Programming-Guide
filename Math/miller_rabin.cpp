@@ -20,18 +20,30 @@ ll fastexpp(ll x, ll y, ll p){
 	return ans%p;
 }
 
+
 //Change fastexpp to fastexp for small numbers :)
+bool check_composite(ll n, ll a, ll d, int s){
+	ll x = fastexp(a,d,n);
+	if(x == 1 || x == n-1) return false;
+	for(int r=1; r<s; r++){
+		x = (1LL*x*x)%n;
+		if(x == n-1) return false;
+	}
+	return true;
+}
 
 bool isPrime(ll p){
-	bool flag = true;
 	if(p<=1) return false;
-	for(int i=0; i<9; i++){
-		int value = TestMillerRabin[i];
-		if(value >= p) break;
-		if(fastexpp(value,p,p) != value){
-			flag = false;
-			break;
-		}
+	int r = 0;
+	ll d = p-1;
+	while(!(d&1)){
+		d >>= 1;
+		r++;
 	}
-	return flag;
+	for(int i=0; i<12; i++){
+		int value = TestMillerRabin[i];
+		if(p == value) return true;
+		if(check_composite(p,value,d,r)) return false;
+	}
+	return true;
 }
