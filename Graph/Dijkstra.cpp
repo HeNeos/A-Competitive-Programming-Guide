@@ -1,10 +1,10 @@
-#Dijkstra by GNeos :v
+//Dijkstra by GNeos :v
 
 ll d[N];
 #define INF (1LL << 60)
 vector <pii> graph[N];
 
-#Shortest Path from s:
+//Shortest Path from s:
 
 void dijkstra(int s){
 	for(int j=0; j<N; j++) d[j] = INF;
