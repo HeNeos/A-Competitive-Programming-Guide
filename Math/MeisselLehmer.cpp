@@ -4,30 +4,24 @@ using ll = long long;
 #define N 1000000000
 const long long limit = (int)(10*sqrt(2*N));
 
+vector <int> pi_sieve(limit);
+
 vector <int> prime_sieve(){
     bitset <limit> sieve;
     vector <int> ans;
     for(int i=2; i<limit; i++){
         if(!sieve[i]){
+            pi_sieve[i] = pi_sieve[i-1] + 1;
             ans.push_back(i);
             for(ll j=1LL*i*i; j<limit; j+=i) sieve[j] = 1;
         }
+		else pi_sieve[i] = pi_sieve[i-1];
     }
+	
 	return ans;
 }
 
 vector <int> primes;
-
-int find_position(int p){
-    int lo = 0;
-    int hi = primes.size()-1;
-    while(lo < hi){
-        int me = lo + (hi-lo+1)/2;
-        if(primes[me] <= p) lo = me;
-        else hi = me-1;
-    }
-    return lo;
-}
 
 map <pair <ll,ll>, ll> phi_cache;
 
@@ -43,13 +37,9 @@ ll phi(ll x, ll a){
 map <ll,ll> pi_cache;
 
 ll pi(ll x){
-    if(pi_cache.find(x) != pi_cache.end()) return pi_cache[x];
-
-    if(x < limit){
-        ll ans = find_position(x)+1;
-		pi_cache[x] = ans;
-        return ans;
-    }
+    if(x < limit) return pi_sieve[x];
+	
+	if(pi_cache.find(x) != pi_cache.end()) return pi_cache[x];
 
     int a = pi((int)(pow(x,1.0/4)));
     int b = pi((int)(sqrt(x)));
