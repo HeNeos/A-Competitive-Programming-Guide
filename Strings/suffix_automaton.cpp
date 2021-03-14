@@ -79,7 +79,7 @@ struct SuffixAutomaton {
 		distinct.resize(N); return getDistinct(0);
 	}
 	
-	ll countSubStrings{
+	ll countSubStrings(){
 		ll ans = 1; 
 		for(int i=1; i<N; i++) ans += len[i]-len[link[i]];
 		return ans;
