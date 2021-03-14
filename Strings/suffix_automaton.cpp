@@ -36,7 +36,7 @@ struct SuffixAutomaton {
 
 /*
 // APPLICATIONS
-// Suffix Array:
+// Suffix Array: Create suffix array of inverse string
 	SuffixAutomaton S;
 	string s;
 	vi sa;
