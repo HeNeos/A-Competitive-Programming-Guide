@@ -3,9 +3,12 @@ struct SuffixAutomaton {
 	vi link{-1}, len{0}, pos{-1};
 	vector<map<char,int>> edges{1}; vector<bool> isClone{0};
 	//link[i]   : the parent of i
-	//len[i] : the length of the longest string in the ith class
+	//len[i]	: the length of the longest string in the ith class
 	//edges[i]  : the labeled edges from node i
+	//pos[i]	: position of node i
 	vector<vi> iLink; // inverse links
+	vi endpos; //size of endpos class
+	vi pp; vi DFSOrder; //DFS arrays
 	int add(int p, char c){
 		auto getEdge = [&]() {
 			if (p == -1) return 0;
@@ -19,7 +22,7 @@ struct SuffixAutomaton {
 		int cur = N++; // make new state
 		link.emplace_back(), len.pb(len[p]+1), edges.emplace_back(), pos.pb(pos[p]+1), isClone.pb(0);
 		for(; ~p && !edges[p].count(c); p = link[p]) edges[p][c] = cur;
-		int x = getEdge(); link[cur] = x; 
+		int x = getEdge(); link[cur] = x; pp.pb(x);
 		return cur;
 	}
 
@@ -27,12 +30,79 @@ struct SuffixAutomaton {
 		for(int i=0; i<s.size(); i++) lastp = add(lastp, s[i]);	
 	}
 
+	void suffixDFS(int x, vector <bool> &vis){
+		for(auto v:edges[x]){
+			if(!vis[v.second]) suffixDFS(v.second, vis);
+		}
+        vis[x] = true;
+        DFSOrder.pb(x);
+	}
+
+	void buildEndPos(){
+		endpos.resize(N); vector <bool> vis(N, false);
+		for(int i=0; i<pp.size(); i++) endpos[pp[i]] = 1;
+		suffixDFS(0, vis);
+		for(int i=0; i<DFSOrder.size(); i++){
+			int p = link[DFSOrder[i]];
+            if(p == -1) continue;
+            endpos[p] += endpos[DFSOrder[i]];
+		}
+	}
+
 	void genILink(){ // inverse links
 		iLink.resize(N); 
 		for(int v=1; v<N; v++) iLink[link[v]].pb(v);
 	} 
-};
+	
+	void getAllOccur(vi& oc, int v) {
+		if (!isClone[v]) oc.pb(pos[v]); // terminal position
+		for(int i=0; i<iLink[v].size(); i++) getAllOccur(oc, iLink[v][i]);
+	}
+	vi allOccur(string s) { // get all occurrences of s in automaton
+		int cur = 0;
+		for(int i=0; i<s.size(); i++){
+			if (!edges[cur].count(s[i])) return {};
+			cur = edges[cur][s[i]];
+		}
+		vi ans; getAllOccur(ans,cur); 
+		for(int i=0; i<ans.size(); i++) ans[i] += 1-s.size(); // convert end pos -> start pos
+		sort(ans.begin(), ans.end()); return ans;
+	}
 
+	vector <ll> distinct;
+	ll getDistinct(int x){ //# of distinct strings starting at state x
+		if (distinct[x]) return distinct[x];
+		distinct[x] = 1; 
+		for(auto v:edges[x]) distinct[x] += getDistinct(v.second);
+		return distinct[x];
+	}
+	ll numDistinct(){ //# distinct substrings including empty
+		distinct.resize(N); return getDistinct(0);
+	}
+
+	ll countSubStrings(){
+		ll ans = 1; 
+		for(int i=1; i<N; i++) ans += len[i]-len[link[i]];
+		return ans;
+	}
+
+	//DEBUG
+	/*
+	void printLinks(){
+		for(int i=0; i<N; i++)
+			cout << '{' << link[i] << "<-" << i << "}\n";
+	}
+	void printSA(){
+		cout << "Printing Suffix Automata:\n";
+		for(int i=0; i<N; i++){
+			cout << '{';
+			for(auto v:edges[i]) cout << i << "->" << v.second << ": " << v.first << ", ";
+			cout << "}\n";
+		}
+		cout << "Printing Suffix Links by nodes:\n";
+		printLinks();
+	}*/
+};
 
 /*
 // APPLICATIONS
@@ -48,40 +118,5 @@ struct SuffixAutomaton {
 		}
 		sort(chr.begin(), chr.end());
 		for(int i=0; i<chr.size(); i++) SuffixArray(chr[i].second);
-	}
-  	
-//String Matching
-	void getAllOccur(vi& oc, int v) {
-		if (!isClone[v]) oc.pb(pos[v]); // terminal position
-		for(int i=0; i<iLink[v].size(); i++) getAllOccur(oc, iLink[v][i]);
-	}
-	vi allOccur(string s) { // get all occurrences of s in automaton
-		int cur = 0;
-		for(int i=0; i<s.size(); i++){
-			if (!edges[cur].count(s[i])) return {};
-			cur = edges[cur][s[i]];
-		}
-		vi oc; getAllOccur(oc,cur); 
-		for(int i=0; i<oc.size(); i++) oc[i] += 1-s.size(); // convert end pos -> start pos
-		sort(oc.begin(), oc.end()); return oc;
-	}
-	
-//Substring count
-	vector <ll> distinct;
-	
-	ll getDistinct(int x) { // # of distinct strings starting at state x
-		if (distinct[x]) return distinct[x];
-		distinct[x] = 1; 
-		for(auto v:edges[x]) distinct[x] += getDistinct(v.second);
-		return distinct[x];
-	}
-	ll numDistinct() { // # distinct substrings including empty
-		distinct.resize(N); return getDistinct(0);
-	}
-	
-	ll countSubStrings(){
-		ll ans = 1; 
-		for(int i=1; i<N; i++) ans += len[i]-len[link[i]];
-		return ans;
 	}
 */
