@@ -9,6 +9,7 @@ struct SuffixAutomaton {
 	vector<vi> iLink; // inverse links
 	vi endpos; //size of endpos class
 	vi pp; vi DFSOrder; //DFS arrays
+	vi terminals; //terminals nodes
 	int add(int p, char c){
 		auto getEdge = [&]() {
 			if (p == -1) return 0;
@@ -53,6 +54,15 @@ struct SuffixAutomaton {
 		iLink.resize(N); 
 		for(int v=1; v<N; v++) iLink[link[v]].pb(v);
 	} 
+	
+	void buildTerminalNodes(){
+		int p = lastp;
+		while(p > 0){
+			terminals.push_back(p);
+			p = link[p];
+		}
+		sort(terminals.begin(), terminals.end());
+	}
 	
 	void getAllOccur(vi& oc, int v) {
 		if (!isClone[v]) oc.pb(pos[v]); // terminal position
