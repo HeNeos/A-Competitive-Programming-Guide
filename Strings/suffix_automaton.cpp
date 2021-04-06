@@ -1,3 +1,8 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+#define pb push_back
+typedef vector<int> vi;
 struct SuffixAutomaton {
 	int N = 1; int lastp = 0;
 	vi link{-1}, len{0}, pos{-1};
@@ -9,7 +14,7 @@ struct SuffixAutomaton {
 	vector<vi> iLink; // inverse links
 	vi endpos; //size of endpos class
 	vi pp; vi DFSOrder; //DFS arrays
-	vi terminals; //terminals nodes
+	vector <bool> terminal; //terminals nodes
 	int add(int p, char c){
 		auto getEdge = [&]() {
 			if (p == -1) return 0;
@@ -39,6 +44,15 @@ struct SuffixAutomaton {
         DFSOrder.pb(x);
 	}
 
+	void findTerminals(){
+		terminal.resize(N);
+		int p = lastp;
+		while(p){
+			terminal[p] = 1;
+			p = link[p];
+		}
+	}
+
 	void buildEndPos(){
 		endpos.resize(N); vector <bool> vis(N, false);
 		for(int i=0; i<pp.size(); i++) endpos[pp[i]] = 1;
@@ -53,41 +67,35 @@ struct SuffixAutomaton {
 	void genILink(){ // inverse links
 		iLink.resize(N); 
 		for(int v=1; v<N; v++) iLink[link[v]].pb(v);
-	} 
-	
-	void buildTerminalNodes(){
-		int p = lastp;
-		while(p > 0){
-			terminals.push_back(p);
-			p = link[p];
-		}
-		sort(terminals.begin(), terminals.end());
 	}
 	
-	void getAllOccur(vi& oc, int v) {
+	void getOccur(vi& oc, int v) {
 		if (!isClone[v]) oc.pb(pos[v]); // terminal position
-		for(int i=0; i<iLink[v].size(); i++) getAllOccur(oc, iLink[v][i]);
+		for(int i=0; i<iLink[v].size(); i++) getOccur(oc, iLink[v][i]);
 	}
-	vi allOccur(string s) { // get all occurrences of s in automaton
+
+	vector <ll> distinct;
+	ll getDistinct(int x){ //# of distinct strings starting at state x, x = 0: all substrings
+		if (distinct[x] != -1) return distinct[x];
+		ll ans = terminal[x]; 
+		for(auto v:edges[x]) ans += getDistinct(v.second);
+		distinct[x] = ans;
+		return ans;
+	}
+
+	vi matchString(string s) { // get all occurrences of s in automaton
 		int cur = 0;
 		for(int i=0; i<s.size(); i++){
 			if (!edges[cur].count(s[i])) return {};
 			cur = edges[cur][s[i]];
 		}
-		vi ans; getAllOccur(ans,cur); 
+		/*
+		distinct.resize(N, -1);
+		return getDistinct(cur);
+		*/
+		vi ans; getOccur(ans,cur); 
 		for(int i=0; i<ans.size(); i++) ans[i] += 1-s.size(); // convert end pos -> start pos
 		sort(ans.begin(), ans.end()); return ans;
-	}
-
-	vector <ll> distinct;
-	ll getDistinct(int x){ //# of distinct strings starting at state x
-		if (distinct[x]) return distinct[x];
-		distinct[x] = 1; 
-		for(auto v:edges[x]) distinct[x] += getDistinct(v.second);
-		return distinct[x];
-	}
-	ll numDistinct(){ //# distinct substrings including empty
-		distinct.resize(N); return getDistinct(0);
 	}
 
 	ll countSubStrings(){
@@ -97,22 +105,21 @@ struct SuffixAutomaton {
 	}
 
 	//DEBUG
-	/*
-	void printLinks(){
-		for(int i=0; i<N; i++)
-			cout << '{' << link[i] << "<-" << i << "}\n";
-	}
 	void printSA(){
-		cout << "Printing Suffix Automata:\n";
-		for(int i=0; i<N; i++){
-			cout << '{';
-			for(auto v:edges[i]) cout << i << "->" << v.second << ": " << v.first << ", ";
-			cout << "}\n";
+		for(int i = 0; i <N; i++) {
+			cout << "i: " << i << '\n';
+			cout << "Terminal: " << terminal[i] << '\n';
+			cout << "Transitions:\n"; 
+			for(auto p : edges[i])
+				cout << p.first << " -> " << p.second << '\n';
+			
+			cout << "Suf Link: " << link[i] << '\n';
+			cout << '\n';
 		}
-		cout << "Printing Suffix Links by nodes:\n";
-		printLinks();
-	}*/
+	}
 };
+
+
 
 /*
 // APPLICATIONS
