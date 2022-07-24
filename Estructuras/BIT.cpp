@@ -32,7 +32,7 @@ int query(int l, int r){
 // Range Update - Point Query
 
 void update(int pos, int v) {
-    for (++pos; pos<N; pos+=(idx&-idx))
+    for (++pos; pos<N; pos+=(pos&-pos))
         BIT[pos] += v;
 }
 
@@ -43,7 +43,7 @@ void range_update(int l, int r, int v) {
 
 int query(int pos) {
     int ans = 0;
-    for (++pos; pos>0; idx-=(idx&-idx))
+    for (++pos; pos>0; pos-=(pos&-pos))
         ans += BIT[pos];
     return ans;
 }
