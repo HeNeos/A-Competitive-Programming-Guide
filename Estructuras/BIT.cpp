@@ -37,8 +37,8 @@ void update(int pos, int v) {
 }
 
 void range_update(int l, int r, int v) {
-    add(l, v);
-    add(r+1, -v);
+    update(l, v);
+    update(r+1, -v);
 }
 
 int query(int pos) {
@@ -61,8 +61,8 @@ void update(vector <int> &b, int pos, int v){
 void range_update(int l, int r, int v){
     update(B1, l, v);
     update(B1, r+1, -v);
-    add(B2, l, v*(l-1));
-    add(B2, r+1, -v*r);
+    update(B2, l, v*(l-1));
+    update(B2, r+1, -v*r);
 }
 
 int query(vector <int> &b, int pos){
