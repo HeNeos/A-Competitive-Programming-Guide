@@ -14,7 +14,7 @@ void init(vector <int> a){
 }
 
 void update(int pos, int v){
-    for(++pos; pos<N; pos += (pos&-pos))
+    for(++pos; pos<=N; pos += (pos&-pos))
         BIT[pos] += v;
 }
 
@@ -32,7 +32,7 @@ int query(int l, int r){
 // Range Update - Point Query
 
 void update(int pos, int v) {
-    for (++pos; pos<N; pos+=(pos&-pos))
+    for (++pos; pos<=N; pos+=(pos&-pos))
         BIT[pos] += v;
 }
 
@@ -54,7 +54,7 @@ vector <int> B1(N, 0);
 vector <int> B2(N, 0);
 
 void update(vector <int> &b, int pos, int v){
-    for(++pos; pos<N; pos+=(pos&-pos))
+    for(++pos; pos<=N; pos+=(pos&-pos))
         b[pos] += v;
 }
 
