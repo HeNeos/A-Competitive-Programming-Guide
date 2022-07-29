@@ -20,7 +20,7 @@ void update(int pos, int v){
 
 int query(int r){ // [0, r)
     int ans = 0;
-    for(int i=x; i; i-=(i&-i))
+    for(int i=r; i; i-=(i&-i))
         ans += BIT[i];
     return ans;
 }
