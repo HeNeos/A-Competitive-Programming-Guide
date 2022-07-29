@@ -14,26 +14,44 @@ void init(vector <int> a){
 }
 
 void update(int pos, int v){
-    for(++pos; pos<=N; pos += (pos&-pos))
-        BIT[pos] += v;
+    for(int i=pos+1; i<=N; i+=(i&-i))
+        BIT[i] += v;
 }
 
-int query(int r){
+int query(int r){ // [0, r)
     int ans = 0;
-    for(++r; r>0; r -= (r&-r))
-        ans += BIT[r];
+    for(int i=x; i; i-=(i&-i))
+        ans += BIT[i];
     return ans;
 }
 
-int query(int l, int r){
-    return query(r) - query(l-1);
+int query(int l, int r){ // [l, r)
+    return query(r) - query(l);
+}
+
+// BIT 2D
+
+void update(int x, int y, int v){
+    for(int i=x+1; i<=N; i+=(i&-i)){
+        for(int j=y+1; j<=N; j+=(j&-j))
+            BIT[i][j] += v;
+    }
+}
+
+int query(int x, int y){ // [(0, 0), (x, y))
+    int ans = 0;
+    for(int i=x; i; i-=(i&-i)){
+        for(int j=y; j; j-=(j&-j))
+            ans += BIT[i][j];
+    }
+    return ans;
 }
 
 // Range Update - Point Query
 
 void update(int pos, int v) {
-    for (++pos; pos<=N; pos+=(pos&-pos))
-        BIT[pos] += v;
+    for(int i=pos+1; i<=N; i+=(i&-i))
+        BIT[i] += v;
 }
 
 void range_update(int l, int r, int v) {
@@ -41,10 +59,10 @@ void range_update(int l, int r, int v) {
     update(r+1, -v);
 }
 
-int query(int pos) {
+int query(int pos){ // [0, r)
     int ans = 0;
-    for (++pos; pos>0; pos-=(pos&-pos))
-        ans += BIT[pos];
+    for (int i=pos; i; i-=(i&-i))
+        ans += BIT[i];
     return ans;
 }
 
