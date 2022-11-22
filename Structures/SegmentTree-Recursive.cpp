@@ -2,7 +2,7 @@
 #define v2 2*node+1
 #define me (l+r)/2
 
-#define N = 300005
+#define N 300005
 
 struct Node {
     ll ans, lazy;
