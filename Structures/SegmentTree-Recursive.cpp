@@ -1,67 +1,63 @@
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-#define v1 2*nodo
-#define v2 2*nodo+1
+#define v1 2*node
+#define v2 2*node+1
 #define me (l+r)/2
 
-const int N = 300005;
+#define N = 300005
 
-struct data{
-	ll res, f1, f2;	
-	data(){}
-	data(ll _res, ll _f1, ll _f2) {
-		res = _res, f1 = _f1, f2 = _f2;
-	}
+struct Node {
+    ll ans, lazy;
+    Node() {}
+    Node(ll _ans, ll _lazy) {ans = _ans, lazy = _lazy;}
 };
 
-data tree[4*N];
+Node tree[4*N];
 
-void build(int nodo, int l, int r) {
-	if(l == r) {
-		tree[nodo].res = v[l];
-		return;
-	}
-	build(v1, l, me);
-	build(v2, me + 1, r);
-	// + es cualquier operacion
-	tree[nodo].res = (tree[v1].res + tree[v2].res);
+void build(int node, int l, int r) {
+    if (l == r) {
+        tree[node].ans = 0;
+        tree[node].lazy = 0;
+        return;
+    }
+    build(v1, l, me);
+    build(v2, me + 1, r);
+    // + is any operation
+    tree[node].ans = (tree[v1].ans + tree[v2].ans);
+    tree[node].lazy = 0;
 }
 
-void push(int nodo, int l, int r) {
-	
-	if(tree[nodo].lazy == 0) return;
-	// update tree[nodo] a partir de la informacion lazy
-	
-	// si el nodo hijo no es una hoja
-	if(l != r){
-		// propagar info a los hijos
-		tree[v1].lazy = f(tree[nodo].lazy);
- 	}
-	// limpiar el lazy del nodo
-	tree[nodo].f1 = 0, tree[nodo].f2 = 0;
+void push(int node, int l, int r) {
+    if(tree[node].lazy == 0) return;
+    // update tree[node] from lazy info
+    tree[node].ans += (r-l+1)*tree[node].lazy;
+    // if child node is not a leaf
+    if(l != r){
+        // propagate to children
+        tree[v1].lazy += tree[node].lazy;
+        tree[v2].lazy += tree[node].lazy;
+     }
+    // clear lazy node
+    tree[node].lazy = 0;
 }
 
-void update(int lu, int ru, int nodo, int l, int r) {
-	push(nodo, l, r);
-	if(l > ru || r < lu) return;
-	
-	if(l >= lu && r <= ru) {
-		// update de los valores lazy
-		tree[nodo].lazy = (something);
-		push(nodo, l, r);
-	}
-	
-	update(lu, ru, v1, l, me);
-	update(lu, ru, v2, me+1, r);
-	//colectar informacion de los hijos
-	tree[nodo].res = (tree[v1].res + tree[v2].res);
+void update(int lu, int ru, int node, int l, int r, int v) {
+    push(node, l, r);
+    if(l > ru || r < lu) return;
+    
+    if(l >= lu && r <= ru) {
+        // update lazy values
+        tree[node].lazy += v;
+        push(node, l, r);
+        return;
+    }
+    update(lu, ru, v1, l, me, v);
+    update(lu, ru, v2, me+1, r, v);
+    // update parent from children
+    tree[node].ans = (tree[v1].ans + tree[v2].ans);
 }
 
-ll query(int lq, int rq, int nodo, int l, int r) {
-	//push al entrar a la frontera
-	push(nodo, l, r);
-	if(l > rq || r < lq) return 0;
-	if(l >= lq && r <= rq)return tree[nodo].res;
-	return (query(lq, rq, v1, l, me) + query(lq, rq, v2, me + 1, r));
+ll query(int lq, int rq, int node, int l, int r) {
+    push(node, l, r);
+    if(l > rq || r < lq) return 0;
+    if(l >= lq && r <= rq) return tree[node].ans;
+    return (query(lq, rq, v1, l, me) + query(lq, rq, v2, me + 1, r));
 }
