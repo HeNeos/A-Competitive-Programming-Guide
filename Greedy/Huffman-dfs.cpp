@@ -18,13 +18,13 @@ ll total = 0;
 vi ocur; //frecuencias de las letras
 int n;
 void dfs(int u, int depth) {
-	bool can = 0;
-	if(u < n) {
-		total += 1LL * depth * ocur[u];
-		return;
-	}
-	dfs(L[u], depth + 1);
-	dfs(R[u], depth + 1);
+    bool can = 0;
+    if(u < n) {
+        total += 1LL * depth * ocur[u];
+        return;
+    }
+    dfs(L[u], depth + 1);
+    dfs(R[u], depth + 1);
 }
 void huffman() {
     priority_queue<pair<ll, ll>>q;
@@ -49,6 +49,6 @@ void huffman() {
     q.pop();
     R[nodo] = q.top().second;
     q.pop();
-		
+        
     dfs(nodo, 0);
 }

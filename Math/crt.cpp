@@ -17,25 +17,25 @@ ll extended_gcd(ll a, ll b, ll& x, ll& y){
 */
 
 bool verify_input(vll &x){
-	vll ans;
-	map <ll, ll> m;
-	int n = x.size();
-	for(int i=0; i<n; i++){
-		if(m.find(x[i].second) != m.end()){
-			if(m[x[i].second] != x[i].first) return false;
-		}
-		else{
-			ans.pb(mp(x[i].first, x[i].second));
-			m[x[i].second] = x[i].first;
-		}
-	}
-	x = ans;
-	return true;
+    vll ans;
+    map <ll, ll> m;
+    int n = x.size();
+    for(int i=0; i<n; i++){
+        if(m.find(x[i].second) != m.end()){
+            if(m[x[i].second] != x[i].first) return false;
+        }
+        else{
+            ans.pb(mp(x[i].first, x[i].second));
+            m[x[i].second] = x[i].first;
+        }
+    }
+    x = ans;
+    return true;
 }
 //data[i].first = x[i]
 //data[i].second = m[i]
 pll crt(vll data){
-	if(!verify_input(data)) return {-1,-1}; /** Invalid input*/
+    if(!verify_input(data)) return {-1,-1}; /** Invalid input*/
     int n = data.size();
     ll a1 = data[0].first;
     ll m1 = data[0].second; 
