@@ -47,21 +47,21 @@ struct SuffixAutomaton {
     return cur;
   }
 
-  void addString(string s) {
+  void add_string(string s) {
     for (int i = 0; i < s.size(); i++)
       lastp = add(lastp, s[i]);
   }
 
-  void suffixDFS(int x, vector<bool> &vis) {
+  void suffix_dfs(int x, vector<bool> &vis) {
     for (auto v : edges[x]) {
       if (!vis[v.second])
-        suffixDFS(v.second, vis);
+        suffix_dfs(v.second, vis);
     }
     vis[x] = true;
     DFSOrder.pb(x);
   }
 
-  void findTerminals() {
+  void find_terminals() {
     terminal.resize(N);
     int p = lastp;
     while (p) {
@@ -70,12 +70,12 @@ struct SuffixAutomaton {
     }
   }
 
-  void buildEndPos() {
+  void build_end_pos() {
     endpos.resize(N);
     vector<bool> vis(N, false);
     for (int i = 0; i < pp.size(); i++)
       endpos[pp[i]] = 1;
-    suffixDFS(0, vis);
+    suffix_dfs(0, vis);
     for (int i = 0; i < DFSOrder.size(); i++) {
       int p = link[DFSOrder[i]];
       if (p == -1)
@@ -84,32 +84,32 @@ struct SuffixAutomaton {
     }
   }
 
-  void genILink() { // inverse links
+  void gen_i_link() { // inverse links
     iLink.resize(N);
     for (int v = 1; v < N; v++)
       iLink[link[v]].pb(v);
   }
 
-  void getOccur(vi &oc, int v) {
+  void get_occur(vi &oc, int v) {
     if (!isClone[v])
       oc.pb(pos[v]); // terminal position
     for (int i = 0; i < iLink[v].size(); i++)
-      getOccur(oc, iLink[v][i]);
+      get_occur(oc, iLink[v][i]);
   }
 
   vector<ll> distinct;
-  ll getDistinct(int x) { //# of distinct strings starting at state x, x = 0:
-                          //all substrings
+  ll get_distinct(int x) { //# of distinct strings starting at state x, x = 0:
+                           // all substrings
     if (distinct[x] != -1)
       return distinct[x];
     ll ans = terminal[x];
     for (auto v : edges[x])
-      ans += getDistinct(v.second);
+      ans += get_distinct(v.second);
     distinct[x] = ans;
     return ans;
   }
 
-  vi matchString(string s) { // get all occurrences of s in automaton
+  vi match_string(string s) { // get all occurrences of s in automaton
     int cur = 0;
     for (int i = 0; i < s.size(); i++) {
       if (!edges[cur].count(s[i]))
@@ -118,17 +118,17 @@ struct SuffixAutomaton {
     }
     /*
     distinct.resize(N, -1);
-    return getDistinct(cur);
+    return get_distinct(cur);
     */
     vi ans;
-    getOccur(ans, cur);
+    get_occur(ans, cur);
     for (int i = 0; i < ans.size(); i++)
       ans[i] += 1 - s.size(); // convert end pos -> start pos
     sort(ans.begin(), ans.end());
     return ans;
   }
 
-  ll countSubStrings() {
+  ll count_sub_strings() {
     ll ans = 1;
     for (int i = 1; i < N; i++)
       ans += len[i] - len[link[i]];
@@ -136,7 +136,7 @@ struct SuffixAutomaton {
   }
 
   // DEBUG
-  void printSA() {
+  void print_sa() {
     for (int i = 0; i < N; i++) {
       cout << "i: " << i << '\n';
       cout << "Terminal: " << terminal[i] << '\n';

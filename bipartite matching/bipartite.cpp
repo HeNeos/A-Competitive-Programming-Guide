@@ -39,7 +39,7 @@ void greedyinit() {
   }
 }
 
-void FordFulkerson() {
+void ford_fulkerson() {
   bool found = 1;
   while (found) {
     found = 0;
@@ -55,7 +55,7 @@ void FordFulkerson() {
   }
 }
 
-void Kuhn() {
+void kuhn() {
   for (int i = 0; i < n; i++) {
     if (pl[i] == -1) {
       memset(vis, 0, sizeof(vis));

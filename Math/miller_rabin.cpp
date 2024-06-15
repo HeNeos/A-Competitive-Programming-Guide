@@ -36,7 +36,7 @@ bool check_composite(ll n, ll a, ll d, int s) {
   return true;
 }
 
-bool isPrime(ll p) {
+bool is_prime(ll p) {
   if (p <= 1)
     return false;
   int r = 0;

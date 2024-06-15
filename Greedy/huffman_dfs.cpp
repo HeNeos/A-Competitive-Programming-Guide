@@ -5,6 +5,8 @@ typedef pair<ll, ll> pll;
 typedef vector<int> vi;
 const int N = 500004;
 
+#define mp make_pair
+
 int L[2 * N], R[2 * N];
 ll total = 0;
 vi ocur; // frecuencias de las letras

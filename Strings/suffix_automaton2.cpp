@@ -64,30 +64,30 @@ struct SuffixAutomaton {
     }
   }
 
-  void addString(string s) {
+  void add_string(string s) {
     init();
     for (int i = 0; i < s.size(); i++)
       sa_extend(s[i]);
     find_terminals();
   }
 
-  void genILink() { // inverse links
+  void gen_i_link() { // inverse links
     iLink.resize(last);
     for (int v = 1; v < last; v++)
       iLink[st[v].link].pb(v);
   }
 
-  int getOccur(int i) {
+  int get_occur(int i) {
     if (occur[i] != -1)
       return occur[i];
     int ans = st[i].terminal;
     for (auto v : st[i].next)
-      ans += getOccur(v.second);
+      ans += get_occur(v.second);
     occur[i] = ans;
     return ans;
   }
 
-  int matchString(string &q) {
+  int match_string(string &q) {
     int cur = 0;
     occur.resize(N, -1);
     for (int i = 0; i < q.size(); i++) {
@@ -95,10 +95,10 @@ struct SuffixAutomaton {
         return 0;
       cur = st[cur].next[q[i]];
     }
-    return getOccur(cur);
+    return get_occur(cur);
   }
 
-  void printSA() {
+  void print_sa() {
     for (int i = 0; i < cnt; i++) {
       cout << "i: " << i << '\n';
       cout << "Terminal: " << st[i].terminal << '\n';

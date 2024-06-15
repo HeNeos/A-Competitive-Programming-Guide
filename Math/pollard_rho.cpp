@@ -39,7 +39,7 @@ ll fastexpp(ll x, ll y, ll p) {
 }
 
 // Better than Miller-Rabin, why? IDK
-bool isPrime(ll n) {
+bool is_prime(ll n) {
   srand(time(NULL));
   for (int i = 2; i <= 10; i++) {
     ll a = (1LL * rand()) % n;
@@ -73,7 +73,7 @@ ll pollard(ll n) {
 void fact(ll n, map<ll, int> &f) {
   if (n == 1)
     return;
-  if (isPrime(n)) {
+  if (is_prime(n)) {
     f[n]++;
     return;
   }
