@@ -5,7 +5,7 @@ module type SIEVE = sig
   val extract_primes : (int -> 'a -> bool) -> 'a list -> int list
 end
 
-module Sieve = struct
+module Sieve : SIEVE = struct
   let build_sieve (n : int) : bool list =
     let is_prime = Array.make (n + 1) true in
     is_prime.(0) <- false;
